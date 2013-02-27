@@ -1,7 +1,6 @@
 #! coding: utf-8
 # pylint: disable-msg=W0311
 import re
-import time
 import select
 import socket
 import signal
@@ -156,7 +155,7 @@ class Backend(object):
       LOG.debug("using preferred ip %s over %s" % (tracker[0], prefip))
       sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, PROTO_TCP)
       prefhost = (prefip, tracker[1])
-      if self._connect_sock(sock, prefhost, 0.1):
+      if self._connect_sock(sock, prefhost):
         self.last_host_connected = prefhost
         # successfully connected so return this socket
         return sock
@@ -172,7 +171,7 @@ class Backend(object):
     else:
       return None
 
-  def _connect_sock(self, sock, sin, timeout=0.25):
+  def _connect_sock(self, sock, sin, timeout=1):
     if timeout:
       # make the socket non-blocking for the connection if wanted, but
       # unconditionally set it back to blocking mode at the endut:
