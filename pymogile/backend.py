@@ -68,7 +68,6 @@ class Backend(object):
       except ValueError:
         raise ValueError("timeout argument must be a number")
 
-    self._host_dead = {}
     self._pref_ip = {}
 
   def set_pref_ip(self, pref_ip):
@@ -209,21 +208,13 @@ class Backend(object):
     size = len(self._hosts)
     tries = size > 15 and 15 or size
     idx = random.randint(0, tries)
-    now = time.time()
 
     for _ in xrange(1, tries + 1):
       tracker = self._hosts[idx % size]
       idx += 1
-      # try dead trackers every 5 seconds
-      if tracker in self._host_dead:
-        if self._host_dead[tracker] > now - 5:
-          continue
       sock = self._sock_to_host(tracker)
       if sock:
         break
-      # mark sock as dead
-      LOG.debug("marking tracker dead: %s @ %d" % (tracker, now))
-      self._host_dead[tracker] = now
     else:
       sock = None
     return sock
