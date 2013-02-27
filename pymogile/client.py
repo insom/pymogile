@@ -214,10 +214,16 @@ class Client(object):
               'noverify': noverify and 1 or 0,
               'zone': zone,
               'pathcount': pathcount}
-    
-    res = self.backend.do_request('get_paths', params)
-    paths = [res["path%d" % x] for x in xrange(1, int(res["paths"]) + 1)]
-    
+
+    try:
+        res = self.backend.do_request('get_paths', params)
+        paths = [res["path%d" % x] for x in xrange(1, int(res["paths"]) + 1)]
+    except MogileFSError as e:
+        if e.errstr == 'unknown_key':
+            paths = []
+        else:
+            raise
+
     self.run_hook('get_paths_end', key)
     return paths
 
