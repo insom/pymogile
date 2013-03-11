@@ -11,6 +11,11 @@ class MogileFSError(Exception):
   
   def __repr__(self):
     return '<pymogile.exceptions.MogileFSError: %s>' % self.errstr
+
+
+class ConnectionError(MogileFSError):
+    def __repr__(self):
+        return '<pymogile.exceptions.ConnectionError>'
     
 
 class HTTPError(Exception):

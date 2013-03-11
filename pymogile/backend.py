@@ -10,7 +10,7 @@ import logging
 from cgi import parse_qs
 from errno import EINPROGRESS, EISCONN
 
-from pymogile.exceptions import MogileFSError
+from pymogile.exceptions import MogileFSError, ConnectionError
 
 CONSOLE_HANDLER = logging.StreamHandler()
 
@@ -95,7 +95,7 @@ class Backend(object):
     ## may cause an exception
     sock = self._get_sock()
     if sock is None:
-      raise MogileFSError("""
+      raise ConnectionError("""
       couldn't connect to any mogilefs backends: %s""" % self._hosts)
 
     self.run_hook('do_request_start', cmd, self.last_host_connected)
