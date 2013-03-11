@@ -171,7 +171,7 @@ class Backend(object):
     else:
       return None
 
-  def _connect_sock(self, sock, sin, timeout=1):
+  def _connect_sock(self, sock, sin, timeout=3):
     if timeout:
       # make the socket non-blocking for the connection if wanted, but
       # unconditionally set it back to blocking mode at the endut:
