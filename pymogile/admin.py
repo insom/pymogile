@@ -363,10 +363,26 @@ class Admin(object):
     except MogileFSError:
       return False
 
-  def get_freespace(self, devid=None):
-    """Get the free space for the entire cluster, or a specific node"""
-    devices = self.get_devices(devid)
-    devices = filter(lambda x: x['status'] in ['alive', 'drain'], devices)
+  def get_free_mb(self):
+    devices = self._get_readable_devices()
     total = sum(d['mb_total'] for d in devices)
     used = sum(d['mb_used'] for d in devices)
     return total - used
+
+  def get_total_mb(self):
+    devices = self._get_readable_devices()
+    return sum(d['mb_total'] for d in devices)
+
+  def get_used_mb(self):
+    devices = self._get_readable_devices()
+    return sum(d['mb_used'] for d in devices)
+
+  def get_used_percent(self):
+    devices = self._get_readable_devices()
+    total = sum(d['mb_total'] for d in devices)
+    used = sum(d['mb_used'] for d in devices)
+    return int((float(used) / total) * 100)
+
+  def _get_readable_devices(self):
+    devices = self.get_devices()
+    return filter(lambda x: x['status'] in ['alive', 'drain'], devices)
